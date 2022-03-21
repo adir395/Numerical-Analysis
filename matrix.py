@@ -1,20 +1,5 @@
 from functools import reduce
 
-
-"""
-def createMatrix():
-    temp=0
-    arr=[]
-    size=input("Enter the size of the matrix ")
-    for i in range (int(size)):
-        temparr=[]
-        for j in range (int(size)):
-            temp=int(input())
-            temparr.append(temp)
-        arr.append(temparr)
-    return arr
-    """
-
 def identityMatrix(size):
     flag_matrix=[]
     for i in range(size):
@@ -47,7 +32,8 @@ def det(matrix):
     else:
         print(f"the determinant is: {determinant}")
 
-def elementaryMatrix(matrix,size):
+def elementaryMatrix(matrix):
+    size=len(matrix)
     mulOfAllElememtary = identityMatrix(size)
     e=1
     for i in range(size):
@@ -57,9 +43,9 @@ def elementaryMatrix(matrix,size):
             print(f"E{e}:")
             e=e+1
             printMatrix(elementary)
-            matrix = multi(elementary, matrix, size)
+            matrix = multi(elementary, matrix)
             printMatrix(matrix)
-            mulOfAllElememtary = multi(elementary, mulOfAllElememtary, size)
+            mulOfAllElememtary = multi(elementary, mulOfAllElememtary)
 
         j = 0
         for j in range(size):
@@ -69,15 +55,15 @@ def elementaryMatrix(matrix,size):
                 print(f"E{e}:")
                 e=e+1
                 printMatrix(elementary)
-                matrix=multi(elementary, matrix, size)
+                matrix=multi(elementary, matrix)
                 printMatrix(matrix)
-                mulOfAllElememtary = multi(elementary, mulOfAllElememtary, size)
+                mulOfAllElememtary = multi(elementary, mulOfAllElememtary)
     print("the The inverse matrix is: ")
     printMatrix(mulOfAllElememtary)
 
 
-
-def multi(m1,m2,size):
+def multi(m1,m2):
+    size=len(m1)
     zeroMat=[]
     line=[]
     for i in range(size):
@@ -95,41 +81,52 @@ def multi(m1,m2,size):
     result=zeroMat
     return result
 
-def sort(matrix,size):
+#def soloution(reverseMatrix,matB)
+ #   {
+
+  #  }
+
+
+def sort(matrix):
+    size=len(matrix)
     for col in range(size):
             row=col
             pivot,max=col,col
             for j in range(size-col-1):
                 row+=1
-                if matrix[row][col]>matrix[pivot][pivot]:
+                if abs(matrix[row][col])>abs(matrix[pivot][pivot]):
                     max=row
             if max!=pivot:
                 temp=matrix[pivot]
                 matrix[pivot]=matrix[max]
                 matrix[max]=temp
+    print("sort:")
     printMatrix(matrix)
+    return matrix
 
 
 
-mat1 = [[2,-1, -2],
-        [2, -3, -5],
-        [-1, 3, 5]]
+mat1 = [[2,-3, -4],
+        [0, 0, -1],
+        [1, -2, 1]]
 
-b = [[4], [6],[8]]
+b = [[16], [-8],[0]]
 
 mat2 = [[1, -1, -2],
         [2, -3, -5],
         [-1, 3, 5]]
 
-mat3 = [[0, 2, -1],
-        [3, -2, 1],
-        [3, 2, -1]]
+mat3 = [[1, 0, 2],
+        [2, -1, 3],
+        [4, 1, 8]]
 
-mat4 = [[1,1,1],
-        [1,2,5],
-        [2,5,-1]]
+mat4 = [[1,0,2],
+        [2,-1,3],
+        [4,1,8]]
 
-elementaryMatrix(mat2,3)
+det(mat3)
+
+elementaryMatrix(sort(mat3))
 
 
 #multi([[1, 0, 0], [-2, 1, 0], [0, 0, 1]],[[1, -1, -2], [2, -3, -5], [-1, 3, 5]],3)
@@ -138,6 +135,6 @@ elementaryMatrix(mat2,3)
 arr=identityMatrix(2)
 printMatrix(arr)
 det(mat2)
-sort(mat2,3)
-/elementaryMatrix(mat2,3)
+sort(mat2)
+/elementaryMatrix(mat2)
 '''''
