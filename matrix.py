@@ -1,6 +1,6 @@
 from functools import reduce
 
-def identityMatrix(size):
+def identityMatrix(size): #make size*size identetity matrix and return it
     flag_matrix=[]
     for i in range(size):
         temp_matrix = []
@@ -13,23 +13,23 @@ def identityMatrix(size):
     return flag_matrix
 
 
-def printMultiMatrix(elementary,matrix,result):
+def printMultiMatrix(elementary,matrix,result): #print the elementary matrix multipay the main matrix and the result of them
     size=len(matrix)
     for i in range (size):
         print(elementary[i],matrix[i]," ",result[i])
     print("\n")
 
-def printMatrix(matrix):
+def printMatrix(matrix): #print matrix
     for i in matrix:
         print(i)
     print("\n")
 
-def printVector(vector):
+def printVector(vector): #print vector
     for i in vector:
         print("[",i,"]")
     print("\n")
 
-def det(matrix):
+def det(matrix): #calc the detemination and return the result
     order=len(matrix)
     posdet=0
     for i in range(order):
@@ -75,7 +75,7 @@ def elementaryMatrix(matrix,b):
     return mulOfAllElememtary
 
 
-def multi(m1,m2):
+def multi(m1,m2): #multiply two matrix and return the result(the place is matter m1*m2 is diffrent m2*m1)
     size=len(m1)
     zeroMat=[]
     line=[]
@@ -99,6 +99,9 @@ def sort(matrix,b):
     if (det(matrix)==0):
         print("The determinant of the given matrix is equal to zero and therefore has no inverse matrix ")
         return 0
+    if len(matrix[0]) != len(b):
+        print("Error! The size of the column in the matrix must be equal to the size of the row in the vector ")
+        return 0
     size=len(matrix)
     for col in range(size):
             row=col
@@ -118,7 +121,7 @@ def sort(matrix,b):
 
 
 
-def multMatrixVector(matrix,vector):
+def multMatrixVector(matrix,vector): #multipy matrix and vector and return the result
     if len(matrix[0])!=len(vector):
         print("Error")
         return 0
@@ -131,9 +134,10 @@ def multMatrixVector(matrix,vector):
         sol.append(temp)
     return sol
 
-def calcMatrix(matrix,b):
-    det(matrix)
+def calcMatrix(matrix,b): #function that gather all the other function and print the final result
     matrix = sort(matrix, b)
+    if matrix==0:
+        return 0
     print("Sorted matrix:")
     printMatrix(matrix)
     print("Sorted B:")
@@ -142,37 +146,13 @@ def calcMatrix(matrix,b):
     print("the result is:", multMatrixVector(matrix, b))
 
 
-mat1 = [[2,-3, -4],
-        [0, 0, -1],
-        [1, -2, 1]]
-
-
-
-mat2 = [[1, -1, -2],
-        [2, -3, -5],
-        [-1, 3, 5]]
-b2 = [-7, -19,20]
-
-mat3 = [[2, 0, -1],
-        [5, 1, 0],
-        [0, 1, 3]]
-b3 = [-1, 7,11]
-
 
 matrix = [[3,-2,4],
         [1,0,2],
         [0,1,0]]
 b = [11, 7,2]
 
-"""det(mat2)
-b2=sortB(mat2,b2) # ממיין פעם אחת את איי ופעם אחת את בי בגלל שהם באותו סקואופ
-#mat2=sort(mat2)
-elementaryMatrix(mat2,b2)"""
 
-"""det(mat3)
-b3=sortB(mat3,b3) # ממיין פעם אחת את איי ופעם אחת את בי בגלל שהם באותו סקואופ
-elementaryMatrix(mat3,b3)"""
 
 calcMatrix(matrix,b)
-
 
