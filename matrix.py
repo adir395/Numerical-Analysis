@@ -1,6 +1,12 @@
 from functools import reduce
 
-def identityMatrix(size): #make size*size identetity matrix and return it
+def identityMatrix(size):
+    """
+
+    makes size*size identity matrix and return it
+    :param size: size of the matrix
+    :return: the identity matrix
+    """
     flag_matrix=[]
     for i in range(size):
         temp_matrix = []
@@ -13,23 +19,46 @@ def identityMatrix(size): #make size*size identetity matrix and return it
     return flag_matrix
 
 
-def printMultiMatrix(elementary,matrix,result): #print the elementary matrix multipay the main matrix and the result of them
+def printMultiMatrix(elementary,matrix,result):
+    """
+
+    print the elementary matrix multiply the main matrix and the result of them
+    :param elementary: elementary matrix
+    :param matrix: the matrix
+    :param result: the result of the multiplication
+    """
     size=len(matrix)
     for i in range (size):
         print(elementary[i],matrix[i]," ",result[i])
     print("\n")
 
-def printMatrix(matrix): #print matrix
+def printMatrix(matrix):
+    """
+
+    print matrix
+    :param matrix: the matrix
+    """
     for i in matrix:
         print(i)
     print("\n")
 
-def printVector(vector): #print vector
+def printVector(vector):
+    """
+
+    print vector
+    :param vector: the vector
+    """
     for i in vector:
         print("[",i,"]")
     print("\n")
 
-def det(matrix): #calc the detemination and return the result
+def det(matrix):
+    """
+
+    calc the determinant
+    :param matrix: the matrix
+    :return: the determinant
+    """
     order=len(matrix)
     posdet=0
     for i in range(order):
@@ -43,6 +72,13 @@ def det(matrix): #calc the detemination and return the result
 
 
 def elementaryMatrix(matrix,b):
+    """
+
+    calculate the elementary matrix, prints every multiplication, and prints the multiplication of all the elementary matrices wich is the inverse matrix
+    :param matrix:the matrix
+    :param b: the vector B
+    :return: the inverse matrix
+    """
     size=len(matrix)
     mulOfAllElememtary = identityMatrix(size)
     e=1
@@ -62,7 +98,7 @@ def elementaryMatrix(matrix,b):
         for j in range(size):
             if matrix[j][i]!=0 and j!=i :
                 elementary = identityMatrix(size)
-                elementary[j][i]=matrix[j][i]*-1 #למה צריך לחלק באיבר המוביל? הוא תמיד 1
+                elementary[j][i]=matrix[j][i]*-1 
                 print(f"Iteration {e}:")
                 e = e + 1
                 result = multi(elementary, matrix)
@@ -75,7 +111,15 @@ def elementaryMatrix(matrix,b):
     return mulOfAllElememtary
 
 
-def multi(m1,m2): #multiply two matrix and return the result(the place is matter m1*m2 is diffrent m2*m1)
+def multi(m1,m2):
+    """
+
+    multiply two matrix and return the result(the place matters m1*m2 is different m2*m1)
+    :param m1: first matrix
+    :param m2: second matrix
+    :return: result of multiplication
+    """
+
     size=len(m1)
     zeroMat=[]
     line=[]
@@ -84,11 +128,8 @@ def multi(m1,m2): #multiply two matrix and return the result(the place is matter
         for j in range(size):
             zeroMat[i].append(0)
     i,j,k=0,0,0
-    # iterate through rows of X
     for i in range(size):
-        # iterate through columns of Y
         for j in range(size):
-            # iterate through rows of Y
             for k in range(size):
                 zeroMat[i][j] += m1[i][k] * m2[k][j]
     result=zeroMat
@@ -96,6 +137,13 @@ def multi(m1,m2): #multiply two matrix and return the result(the place is matter
 
 
 def sort(matrix,b):
+    """
+
+    sorts every column in the given matrix and vector (from the biggest to the smallest)
+    :param matrix:the matrix
+    :param b: B
+    :return: the sorted matrix
+    """
     if (det(matrix)==0):
         print("The determinant of the given matrix is equal to zero and therefore has no inverse matrix ")
         return 0
@@ -121,7 +169,14 @@ def sort(matrix,b):
 
 
 
-def multMatrixVector(matrix,vector): #multipy matrix and vector and return the result
+def multMatrixVector(matrix,vector):
+
+    """
+    multiply matrix and vector
+    :param matrix: matrix
+    :param vector: vector
+    :return: result of multiplication
+    """
     if len(matrix[0])!=len(vector):
         print("Error")
         return 0
@@ -134,7 +189,13 @@ def multMatrixVector(matrix,vector): #multipy matrix and vector and return the r
         sol.append(temp)
     return sol
 
-def calcMatrix(matrix,b): #function that gather all the other function and print the final result
+def calcMatrix(matrix,b):
+
+    """
+    function that gathers all the other functions and print the final result
+    :param matrix: the matrix
+    :param b: B
+    """
     matrix = sort(matrix, b)
     if matrix==0:
         return 0
