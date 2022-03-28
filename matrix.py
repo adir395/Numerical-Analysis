@@ -29,7 +29,7 @@ def printMultiMatrix(elementary,matrix,result):
     """
     size=len(matrix)
     for i in range (size):
-        print(elementary[i],matrix[i]," ",result[i])
+        print(elementary[i],matrix[i],"=",result[i])
     print("\n")
 
 def printMatrix(matrix):
