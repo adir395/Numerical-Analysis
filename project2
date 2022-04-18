@@ -4,10 +4,13 @@
 # in diagonally dominant form
 
 def GaussSeidel(matA,b):
+    size=len(matA)
 
-    f1 = lambda x, y, z: (17 - y + 2 * z) / matA[0][0]
-    f2 = lambda x, y, z: (-18 - 3 * x + z) / matA[1][1]
-    f3 = lambda x, y, z: (25 - 2 * x + 3 * y) / matA[2][2]
+
+    print(matA[0][1])
+    f1 = lambda x, y, z: (b[0] - matA[0][1]*y - matA[0][2] * z) / matA[0][0]
+    f2 = lambda x, y, z: (b[1] - matA[1][0] * x -matA[1][2]* z) / matA[1][1]
+    f3 = lambda x, y, z: (b[2] - matA[2][0] * x - matA[2][1] * y) / matA[2][2]
 
     # Initial setup
     x0 = 0
@@ -16,7 +19,7 @@ def GaussSeidel(matA,b):
     count = 1
 
     # Reading tolerable error
-    e = float(input('Enter tolerable error: '))
+    e = 0.00001
 
     # Implementation of Gauss Seidel Iteration
     print('\nCount\tx\ty\tz\n')
@@ -42,12 +45,13 @@ def GaussSeidel(matA,b):
     print('\nSolution: x=%0.3f, y=%0.3f and z = %0.3f\n' % (x1, y1, z1))
 
 
+
 def Jacobi(matA,b):
     # Defining equations to be solved
     # in diagonally dominant form
-    f1 = lambda x, y, z: (b[0][0] - y + 2 * z) / matA[0][0]
-    f2 = lambda x, y, z: (b[1][0] - 3 * x + z) / matA[1][1]
-    f3 = lambda x, y, z: (b[2][0] - 2 * x + 3 * y) / matA[2][2]
+    f1 = lambda x, y, z: (b[0] - matA[0][1] * y - matA[0][2] * z) / matA[0][0]
+    f2 = lambda x, y, z: (b[1] - matA[1][0] * x - matA[1][2] * z) / matA[1][1]
+    f3 = lambda x, y, z: (b[2] - matA[2][0] * x - matA[2][1] * y) / matA[2][2]
 
     # Initial setup
     x0 = 0
@@ -56,7 +60,7 @@ def Jacobi(matA,b):
     count = 1
 
     # Reading tolerable error
-    e = float(input('Enter tolerable error: '))
+    e = 0.00001
 
     # Implementation of Jacobi Iteration
     print('\nCount\tx\ty\tz\n')
@@ -83,6 +87,6 @@ def Jacobi(matA,b):
 
 
 matrixA = [[20,1,-2],[3,20,-1],[2,-3,20]]
-vectorb = [[17], [-18], [25]]
-GaussSeidel(matrixA,vectorb)
+vectorb = [17, -18, 25]
+#GaussSeidel(matrixA,vectorb)
 Jacobi(matrixA,vectorb)
