@@ -1,6 +1,11 @@
-
-
 def GaussSeidel(matrix,b,diagonal):
+    """
+    solves system of equations using the gauss-seidel method
+    :param matrix:the given matrix
+    :param b: vector b
+    :param diagonal: true or false- if there is a dominant diagonal
+    :return: true or false If the system of equations converges
+    """
     count=0
     counter=0
     size = len(matrix)
@@ -8,21 +13,35 @@ def GaussSeidel(matrix,b,diagonal):
     tolerableErrorCounter = 0
     variables = []
     nextVariables = []
+    positiveNegative=[]
     e = []
+    whileCounter = 1
     for i in range(size):
         variables.append(0)
         e.append(0)
         nextVariables.append(0)
+        positiveNegative.append(0)
+        print(variables[i], end=" ")
+    print("")
 
     while (tolerableErrorCounter == 0 )or (diagonal==False and counter<100):
         for i in range(size):
-            nextVariables[i] = b[i]
+            nextVariables[i] = b[i][0]
             for j in range(size):
                 if i != j:
                     nextVariables[i] -= (matrix[i][j] * variables[j])
             nextVariables[i] /= matrix[i][i]
             e[i] = abs(nextVariables[i] - variables[i])
             variables[i]=nextVariables[i]
+            if whileCounter == 1:
+                positiveNegative[i] = e[i]
+            else:
+                if (e[i] > positiveNegative[i]):
+                    print("The system does not converge")
+                    return False
+                else:
+                    positiveNegative[i] = e[i]
+
         for i in range(size):
             print(nextVariables[i], end=" ")
         print("")
@@ -36,12 +55,23 @@ def GaussSeidel(matrix,b,diagonal):
             count+=1
         else:
             counter+=1
+        if counter==99:
+            print("Although there is no dominant diagonal")
+        whileCounter+=1
     print(f"After a total of {count} iterations the result is:")
     for i in range(size):
         print(f"x{i+1}:", nextVariables[i], " ", end=" ")
+    return True
 
 
 def Jacobi(matrix,b,diagonal):
+    """
+    solves system of equations using the gauss-seidel method
+    :param matrix:the given matrix
+    :param b: vector b
+    :param diagonal: true or false- if there is a dominant diagonal
+    :return: true or false If the system of equations converges
+    """
     count = 0
     counter = 0
     size = len(matrix)
@@ -49,20 +79,35 @@ def Jacobi(matrix,b,diagonal):
     tolerableErrorCounter = 0
     variables=[]
     nextVariables=[]
+    positiveNegative=[]
     e=[]
+    whileCounter = 1
+
     for i in range(size):
         variables.append(0)
         e.append(0)
         nextVariables.append(0)
+        positiveNegative.append(0)
+        print(variables[i], end=" ")
+    print("")
 
     while (tolerableErrorCounter == 0 )or (diagonal==False and counter<100):
         for i in range(size):
-            nextVariables[i]=b[i]
+            nextVariables[i]=b[i][0]
             for j in range(size):
                 if i!=j:
                     nextVariables[i] -= (matrix[i][j]*variables[j])
             nextVariables[i]/=matrix[i][i]
             e[i] = abs(nextVariables[i] - variables[i])
+            if whileCounter==1:
+                    positiveNegative[i]=e[i]
+            else:
+                if (e[i]>positiveNegative[i]):
+                    print("The system does not converge")
+                    return False
+                else:
+                    positiveNegative[i]=e[i]
+
         for i in range(size):
             print(nextVariables[i],end=" ")
         print("")
@@ -77,11 +122,22 @@ def Jacobi(matrix,b,diagonal):
             count += 1
         else:
             counter += 1
+        if counter==99:
+            print("Although there is no dominant diagonal")
+        whileCounter+=1
     print(f"After a total of {count} iterations the result is:")
     for i in range(size):
         print(f"x{i + 1}:", nextVariables[i], " ", end=" ")
+    return True
 
-def createDominantDiagonal(matrix):
+
+def createDominantDiagonal(matrix,b):
+    """
+    Arranges the matrix and Vector B so that there is a dominant diagonal
+    :param matrix: the given matrix
+    :param b: the vector B
+    :return: the new matrix with dominant diagonal
+    """
     size=len(matrix)
     notDominant=-1
     for i in range(size):
@@ -98,9 +154,11 @@ def createDominantDiagonal(matrix):
                         sum = sum + abs(matrix[n][k])
                 if abs(matrix[n][notDominant]) >=sum :
                     temp = matrix[notDominant]
+                    temp2 = b[notDominant]
                     matrix[notDominant] = matrix[n]
+                    b[notDominant] = b[n]
                     matrix[n] = temp
-    print(matrix)
+                    b[n] = temp2
     return matrix
 
 
@@ -127,46 +185,43 @@ def findStepsForDDM(matrix):
     return result
 
 
-def dominantDiagonal(matrix):
+def dominantDiagonal(matrix,b):
+    """
+    checks if there is a dominant diagonal if not, try to make one if this is not an option return false
+    :param matrix: the given matrix
+    :param b: the vector B
+    :return:true or false if a dominant diagonal van be done in the given matrix
+    """
     if findStepsForDDM(matrix)==0:
         return True
     if findStepsForDDM(matrix) != 0:
-        newMatrix=createDominantDiagonal(matrix)
+        newMatrix=createDominantDiagonal(matrix,b)
         if findStepsForDDM(newMatrix) == 0:
             return True
         else:
             print("There is no dominant diagonal for this matrix")
-        # try 100 times anyway
             return False
 
 
+matrixA = [[4,2,0],[2,10,4],[0,4,5]]
+vectorB=[[2],[6],[5]]
 
-
-
-"""matrix = [[7, 5, 1,1],
-       [5, 2, 11,2],
-       [3, 5, 4,12],
-       [1,10,2,3]]
-
-dominantDiagonal(matrix)"""
-matrix = [[20,1,-2],[3,20,-1],[2,-3,20]]
-b = [17, -18, 25]
 while True:
     print("how would you like to solve this matrix? ")
     print("1- Jacobi")
     print("2- Gauss-Seidel")
     val = input("please press 1 or 2 : ")
     if val=='1':
-        if dominantDiagonal(matrix)==True:
-            Jacobi(matrix,b,True)
+        if dominantDiagonal(matrixA,vectorB)==True:
+            Jacobi(matrixA,vectorB,True)
         else:
-            Jacobi(matrix, b, False)
+            Jacobi(matrixA, vectorB, False)
         break
     elif val=='2':
-        if dominantDiagonal(matrix)==True:
-            GaussSeidel(matrix,b,True)
+        if dominantDiagonal(matrixA,vectorB)==True:
+            GaussSeidel(matrixA,vectorB,True)
         else:
-            GaussSeidel(matrix,b,False)
+            GaussSeidel(matrixA,vectorB,False)
 
         break
     else:
