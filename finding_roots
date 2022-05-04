@@ -1,0 +1,59 @@
+from sympy import *
+
+def bisection_calc(f,start_point ,end_point,epsilon):
+    a_n = start_point
+    b_n = end_point
+    i=0
+    while (abs(a_n-b_n)>epsilon):
+        m_n = (a_n + b_n)/2  # the middle
+        f_m_n = f(m_n)
+        if f(a_n)*f_m_n < 0:
+            a_n = a_n
+            b_n = m_n
+        elif f(b_n)*f_m_n < 0:
+            a_n = m_n
+            b_n = b_n
+        elif f_m_n == 0:
+            print("Found exact solution.")
+            return m_n
+        else:
+            print("Bisection method fails.")
+            return None
+        i=i+1
+    print(i,"iteration")
+    return (a_n + b_n)/2
+
+def range_check(f,start_point,end_point,epsilon):
+    if f(start_point )*f(end_point ) >= 0:
+        a=start_point
+        while (a<=end_point):
+            if ((f(a)>=0 and f(a+0.1)<=0 )or((f(a)<=0 and f(a+0.1)>=0 ))):
+                print(bisection_calc(f,a,a+0.1,epsilon))
+                a=a+0.1
+            else:
+                a=a+0.1
+    else:
+        print(bisection_calc(f,start_point,end_point,epsilon))
+        return
+
+
+
+def check_Derivative(f):
+    x = symbols('x')
+    my_f1 =f(x).diff(x)
+    print(my_f1)
+    return my_f1
+
+def bisection(f,start_point,end_point,epsilon):
+    range_check(f,start_point,end_point,epsilon)
+    f_d=check_Derivative(f)
+    range_check(f_d,start_point,end_point,epsilon)
+
+
+ep=0.0001
+
+
+f = lambda x: x**4 + x**3-3*x**2
+bisection(f,-3,2,ep)
+#f = lambda x: x**3 -x-1
+#print(bisection(f,1,2,ep))
