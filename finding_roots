@@ -36,30 +36,9 @@ def range_check(f,start_point,end_point,epsilon):
         print(bisection_calc(f,start_point,end_point,epsilon))
         return
 
-''''
-def range_check2(f,start_point,end_point,epsilon):
-    a = symbols('a')
-    my_f1 = f(a).diff(a)
-    b = symbols('b')
-    my_f2 = f(b).diff(b)
-    
-    if f(a).diff(x)*f(end_point ) >= 0:
-        a=start_point
-        while (a<=end_point):
-            if ((f(a)>=0 and f(a+0.1)<=0 )or((f(a)<=0 and f(a+0.1)>=0 ))):
-                print(bisection_calc(f,a,a+0.1,epsilon))
-                a=a+0.1
-            else:
-                a=a+0.1
-    else:
-        print(bisection_calc(f,start_point,end_point,epsilon))
-        return
-'''
 
 def check_Derivative(f):
-    f_prime = f.diff(x)
-    print(f_prime)
-    return f_prime
+    return f.diff(x)
 
 def bisection(f,start_point,end_point,epsilon):
     f_d = check_Derivative(f)
