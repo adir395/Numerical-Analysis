@@ -1,7 +1,7 @@
 from sympy import *
+import math
 
-
-def bisection_calc(f,f_d,start_point ,end_point,epsilon,i):
+def bisection_calc(f,f_d,start_point ,end_point,epsilon,i,n):
     a_n = start_point
     b_n = end_point
     k=0
@@ -18,8 +18,9 @@ def bisection_calc(f,f_d,start_point ,end_point,epsilon,i):
             elif f_m_n == 0:
                 print("Found exact solution.")
                 return m_n
-            else:
-                print("Bisection method fails.")
+            elif k >= n:
+                print(k, " Is the max iteration according to error calculation\n")
+                print("Bisection method fails,please select another methode ")
                 return None
             k=k+1
         print(k,"iteration")
@@ -37,8 +38,9 @@ def bisection_calc(f,f_d,start_point ,end_point,epsilon,i):
             elif f_m_n == 0:
                 print("Found exact solution.")
                 return m_n
-            else:
-                print("Bisection method fails.")
+            elif k>=n:
+                print(k," Is the max iteration according to error calculation\n")
+                print("Bisection method fails,please select another methode ")
                 return None
             k=k+1
         if abs(f(a_n+b_n))<=epsilon:
@@ -46,12 +48,12 @@ def bisection_calc(f,f_d,start_point ,end_point,epsilon,i):
             print((a_n + b_n) / 2)
 
 
-def range_check(f,f_d,start_point,end_point,epsilon,i):
+def range_check(f,f_d,start_point,end_point,epsilon,i,n):
     a=start_point
     if i==0:
         while (a<end_point):
             if ((f(a)>=0 and f(a+0.1)<=0 )or((f(a)<=0 and f(a+0.1)>=0 ))):
-                bisection_calc(f,f_d,a,a+0.1,epsilon,0)
+                bisection_calc(f,f_d,a,a+0.1,epsilon,0,n)
                 a=a+0.1
             else:
                 a=a+0.1
@@ -59,18 +61,22 @@ def range_check(f,f_d,start_point,end_point,epsilon,i):
     else:
         while (a<end_point):
             if ((f_d(a)>=0 and f_d(a+0.1)<=0 )or((f_d(a)<=0 and f_d(a+0.1)>=0 ))):
-                bisection_calc(f,f_d,a,a+0.1,epsilon,1)
+                bisection_calc(f,f_d,a,a+0.1,epsilon,1,n)
                 a=a+0.1
             else:
                 a=a+0.1
+    return
 
 
 def bisection(f,start_point,end_point,epsilon):
+    a=end_point-start_point
+    n = -((math.log(10**-10/a))/math.log(2))
+    n=int(n+1)
     f_d = f.diff(x) #Derivative
     f_d = lambdify(x, f_d) #create the polinom to function
     f = lambdify(x, f)
-    range_check(f,f_d,start_point,end_point,epsilon,1)
-    range_check(f,f_d,start_point,end_point,epsilon,0)
+    range_check(f,f_d,start_point,end_point,epsilon,1,n)
+    range_check(f,f_d,start_point,end_point,epsilon,0,n)
 
 
 epsilon=0.0001
