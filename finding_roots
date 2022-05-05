@@ -23,6 +23,7 @@ def bisection_calc(f,start_point ,end_point,epsilon):
     print(k,"iteration")
     return (a_n + b_n)/2
 
+
 def range_check(f,start_point,end_point,epsilon):
     if f(start_point )*f(end_point ) >= 0:
         a=start_point
@@ -37,12 +38,9 @@ def range_check(f,start_point,end_point,epsilon):
         return
 
 
-def check_Derivative(f):
-    return f.diff(x)
-
 def bisection(f,start_point,end_point,epsilon):
-    f_d = check_Derivative(f)
-    f_d = lambdify(x, f_d)
+    f_d = f.diff(x) #Derivative
+    f_d = lambdify(x, f_d) #create the polinom to function
     range_check(f_d,start_point,end_point,epsilon)
     f = lambdify(x, f)
     range_check(f,start_point,end_point,epsilon)
