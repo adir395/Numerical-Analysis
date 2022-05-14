@@ -44,7 +44,6 @@ def newtonRaphson_calc(f,f_d,f_dShow,start_point ,end_point,epsilon,i):
         if abs(f(lastGuess))<=epsilon:
             print(f"The root is {lastGuess}\n")
         else:
-            print(lastGuess)
             print("After testing it can be seen that this root is not suitable because f(x) doesn't equal 0\n")
 
 
@@ -96,9 +95,19 @@ def range_check_newtonRaphson(f,f_d,f_dShow,start_point,end_point,epsilon,i):
 
 
 def bisection_calc(f,f_d,start_point ,end_point,epsilon,i,n):
+    """
+        calculate the roots with the bisection method
+        :param f: normal function
+        :param f_d: derivative function
+        :param start_point: first point
+        :param end_point: second point
+        :param epsilon: minimum error
+        :param i: 1 for derivative 0 for normal function
+        :param n: the max iteration
+        """
     a_n = start_point
     b_n = end_point
-    k=0
+    k=1
     if i==0:
         while (abs(a_n-b_n)>epsilon):
             m_n = (a_n + b_n)/2  # the middle
@@ -116,9 +125,9 @@ def bisection_calc(f,f_d,start_point ,end_point,epsilon,i,n):
                 print(k, " Is the max iteration according to error calculation\n")
                 print("Bisection method fails,please select another methode ")
                 return None
+            print("Iteration:",k,",a=",a_n,",b=",b_n,",c=",m_n,",f(a)=",f(a_n),",f(b)=",f(b_n))
             k=k+1
-        print(k,"iteration")
-        print((a_n + b_n)/2)
+        print("The root is : ",(a_n + b_n)/2,"\n")
     else:
         while (abs(a_n-b_n)>epsilon):
             m_n = (a_n + b_n)/2  # the middle
@@ -136,17 +145,31 @@ def bisection_calc(f,f_d,start_point ,end_point,epsilon,i,n):
                 print(k," Is the max iteration according to error calculation\n")
                 print("Bisection method fails,please select another methode ")
                 return None
+            print("Iteration:",k,",a=",a_n,",b=",b_n,",c=",m_n,",f(a)=",f(a_n),",f(b)=",f(b_n))
             k=k+1
+
         if abs(f(a_n+b_n))<=epsilon:
-            print(k,"iteration")
-            print((a_n + b_n) / 2)
+            print("The root is : ",(a_n + b_n)/2,"\n")
+        else:
+            print("After testing it can be seen that this root is not suitable because f(x) doesn't equal 0\n")
+            return
 
 
-def range_check(f,f_d,start_point,end_point,epsilon,i,n):
+def range_check_bisection(f,f_d,start_point,end_point,epsilon,i,n):
+    """
+      calculates derivative and send the the function to be checked every segment
+      :param f: normal function
+      :param f_d: derivative function
+      :param start_point: first point
+      :param end_point: second point
+      :param epsilon: minimum error
+      :param i: if the function is derivative
+      :param n: the max iteration
+      """
     a=start_point
     if i==0:
         while (a<end_point):
-            if (f(a)*f(a+0.1)<0  ):
+            if ((f(a)>=0 and f(a+0.1)<=0 )or((f(a)<=0 and f(a+0.1)>=0 ))):
                 bisection_calc(f,f_d,a,a+0.1,epsilon,0,n)
                 a=a+0.1
             else:
@@ -154,7 +177,7 @@ def range_check(f,f_d,start_point,end_point,epsilon,i,n):
         return
     else:
         while (a<end_point):
-            if (f_d(a)*f_d(a+0.1)<0 ):
+            if ((f_d(a)>=0 and f_d(a+0.1)<=0 )or((f_d(a)<=0 and f_d(a+0.1)>=0 ))):
                 bisection_calc(f,f_d,a,a+0.1,epsilon,1,n)
                 a=a+0.1
             else:
@@ -163,14 +186,22 @@ def range_check(f,f_d,start_point,end_point,epsilon,i,n):
 
 
 def bisection(f,start_point,end_point,epsilon):
+    """
+          calculates derivative and send the the function to be checked every segment
+
+          :param f: normal function
+          :param start_point: first point
+          :param end_point: second point
+          :param epsilon: minimum error
+          """
     a=end_point-start_point
     n = -((math.log(10**-10/a))/math.log(2))
     n=int(n+1)
-    f_d = sp.diff(f,x) #Derivative
+    f_d = f.diff(x) #Derivative
     f_d = lambdify(x, f_d) #create the polinom to function
     f = lambdify(x, f)
-    range_check(f,f_d,start_point,end_point,epsilon,1,n)
-    range_check(f,f_d,start_point,end_point,epsilon,0,n)
+    range_check_bisection(f,f_d,start_point,end_point,epsilon,1,n)
+    range_check_bisection(f,f_d,start_point,end_point,epsilon,0,n)
 
 def secannt(f,start_point,end_point,epsilon):
     """
@@ -253,20 +284,17 @@ def secant_calc(f,f_d,start_point ,end_point,epsilon,i):
         if abs(f(lastGuess))<=epsilon:
             print(f"The root is {lastGuess}\n")
         else:
-            print(lastGuess)
             print("After testing it can be seen that this root is not suitable because f(x) doesn't equal 0\n")
 
 
 
 epsilon=0.0001
 x = sp.symbols('x')
-f = x**2-2
-f1 = x**3 -x-1
-f2 = x**4 +x**3-3*x**2
+f = x**4 +x**3-3*x**2
 start_point = -3
 end_point = 2
-smallestRange=0.1
 
+#the small range to check each iteration is : 0.1
 
 while True:
     print("how would you like to solve this equation? ")
@@ -276,15 +304,26 @@ while True:
 
     val = input("please press 1 or 2 or 3 : ")
     if val=='1':
-        bisection(f2,start_point,end_point,epsilon)
+        bisection(f,start_point,end_point,epsilon)
         break
     elif val=='2':
-        newtonRaphson(f2, start_point, end_point, epsilon)
+        newtonRaphson(f, start_point, end_point, epsilon)
         break
     elif val=='3':
-        secannt(f2, start_point, end_point, epsilon)
+        secannt(f, start_point, end_point, epsilon)
         break
     else:
         print("Wrong number, please try again. ")
+
+
+
+
+
+
+
+
+
+
+
 
 
