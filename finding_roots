@@ -1,10 +1,18 @@
-#calc the derivative from func -> lambdify
 from sympy.utilities.lambdify import lambdify
-#from sympy import *
 import sympy as sp
 import math
 
-def newtonRepson_calc(f,f_d,f_dShow,start_point ,end_point,epsilon,i):
+def newtonRaphson_calc(f,f_d,f_dShow,start_point ,end_point,epsilon,i):
+    """
+    calculate the roots with the newton raphson method
+    :param f: normal function
+    :param f_d: derivative function
+    :param f_dShow: function as it looks
+    :param start_point: first point
+    :param end_point: second point
+    :param epsilon: minimum error
+    :param i: 1 for derivative 0 for normal function
+    """
     difference = 1
     guess = start_point
     iteration = 1
@@ -18,7 +26,7 @@ def newtonRepson_calc(f,f_d,f_dShow,start_point ,end_point,epsilon,i):
             lastGuess=guess
             guess=nextGuess
             iteration+=1
-        print(f"The root x{i} is {lastGuess}\n")
+        print(f"The root is {lastGuess}\n")
 
     else:
         f_d2 = sp.diff(f_dShow,x)  # Derivative
@@ -34,27 +42,44 @@ def newtonRepson_calc(f,f_d,f_dShow,start_point ,end_point,epsilon,i):
             iteration += 1
 
         if abs(f(lastGuess))<=epsilon:
-            print(f"The root x{i} is {lastGuess}\n")
+            print(f"The root is {lastGuess}\n")
         else:
             print(lastGuess)
             print("After testing it can be seen that this root is not suitable because f(x) doesn't equal 0\n")
 
 
-def newtonRepson(f,start_point,end_point,epsilon):
+def newtonRaphson(f,start_point,end_point,epsilon):
+    """
+    calculates derivative and send the the function to be checked every segment
+    :param f: normal function
+    :param start_point: first point
+    :param end_point: second point
+    :param epsilon: minimum error
+    """
 
     f_d = f.diff(x)  # Derivative
     f_dShow=f_d
     f_d = lambdify(x, f_d)  # create the polinom to function
     f = lambdify(x, f)
-    range_check_newtonRepson(f,f_d,f_dShow,start_point,end_point,epsilon,0)
-    range_check_newtonRepson(f,f_d,f_dShow,start_point,end_point,epsilon,1) #נגזרת
+    range_check_newtonRaphson(f,f_d,f_dShow,start_point,end_point,epsilon,0)
+    range_check_newtonRaphson(f,f_d,f_dShow,start_point,end_point,epsilon,1)
 
-def range_check_newtonRepson(f,f_d,f_dShow,start_point,end_point,epsilon,i):
+def range_check_newtonRaphson(f,f_d,f_dShow,start_point,end_point,epsilon,i):
+    """
+    do the calculation of the method every segment that there is a root
+    :param f: normal function
+    :param f_d: derivative function
+    :param f_dShow: function as it looks
+    :param start_point: first point
+    :param end_point: second point
+    :param epsilon: minimum error
+    :param i: 1 for derivative 0 for normal function
+    """
     a=start_point
     if i==0:
         while (a<end_point):
             if (f(a)*f(a+0.1)<0 ):
-                newtonRepson_calc(f,f_d,f_dShow,a,a+0.1,epsilon,0)
+                newtonRaphson_calc(f,f_d,f_dShow,a,a+0.1,epsilon,0)
                 a=a+0.1
             else:
                 a=a+0.1
@@ -62,7 +87,7 @@ def range_check_newtonRepson(f,f_d,f_dShow,start_point,end_point,epsilon,i):
     else:
         while (a<end_point):
             if (f_d(a)*f_d(a+0.1)<0 ):
-                newtonRepson_calc(f,f_d,f_dShow,a,a+0.1,epsilon,1)
+                newtonRaphson_calc(f,f_d,f_dShow,a,a+0.1,epsilon,1)
                 a=a+0.1
             else:
                 a=a+0.1
@@ -147,6 +172,91 @@ def bisection(f,start_point,end_point,epsilon):
     range_check(f,f_d,start_point,end_point,epsilon,1,n)
     range_check(f,f_d,start_point,end_point,epsilon,0,n)
 
+def secannt(f,start_point,end_point,epsilon):
+    """
+       calculates derivative and send the the function to be checked every segment
+
+       :param f: normal function
+       :param start_point: first point
+       :param end_point: second point
+       :param epsilon: minimum error
+       """
+    f_d = sp.diff(f,x) #Derivative
+    f_d = lambdify(x, f_d) #create the polinom to function
+    f = lambdify(x, f)
+    range_check_secant(f,f_d,start_point,end_point,epsilon,1)
+    range_check_secant(f,f_d,start_point,end_point,epsilon,0)
+
+def range_check_secant(f,f_d,start_point,end_point,epsilon,i):
+    """
+    do the calculation of the method every segment that there is a root
+
+    :param f: normal function
+    :param f_d: derivative function
+    :param f_dShow: function as it looks
+    :param start_point: first point
+    :param end_point: second point
+    :param epsilon: minimum error
+    :param i: 1 for derivative 0 for normal function
+    """
+    a=start_point
+    if i==0:
+        while (a<end_point):
+            if (f(a)*f(a+0.1)<0  ):
+                secant_calc(f,f_d,a,a+0.1,epsilon,0)
+                a=a+0.1
+            else:
+                a=a+0.1
+        return
+    else:
+        while (a<end_point):
+            if (f_d(a)*f_d(a+0.1)<0 ):
+                secant_calc(f,f_d,a,a+0.1,epsilon,1)
+                a=a+0.1
+            else:
+                a=a+0.1
+    return
+
+def secant_calc(f,f_d,start_point ,end_point,epsilon,i):
+    """
+        calculate the roots with the secant method
+        :param f: normal function
+        :param f_d: derivative function
+        :param f_dShow: function as it looks
+        :param start_point: first point
+        :param end_point: second point
+        :param epsilon: minimum error
+        :param i: 1 for derivative 0 for normal function
+        """
+    difference = 1
+    firstGuess = start_point
+    secondGuess=end_point
+    iteration = 1
+    if i==0:
+        while(difference>=epsilon):
+            nextGuess=(firstGuess*f(secondGuess)-secondGuess*f(firstGuess))/(f(secondGuess)-f(firstGuess))
+            difference=abs(nextGuess-secondGuess)
+            print(f"iteration: {iteration} Xr: {firstGuess} Xr+1: {secondGuess} ")
+            lastGuess=secondGuess
+            secondGuess=nextGuess
+            iteration+=1
+        print(f"The root is {lastGuess}\n")
+    else:
+        while(difference>=epsilon):
+            nextGuess=(firstGuess*f_d(secondGuess)-secondGuess*f_d(firstGuess))/(f_d(secondGuess)-f_d(firstGuess))
+            difference=abs(nextGuess-secondGuess)
+            print(f"iteration: {iteration} Xr: {firstGuess} Xr+1: {secondGuess} ")
+            lastGuess=secondGuess
+            secondGuess=nextGuess
+            iteration+=1
+
+        if abs(f(lastGuess))<=epsilon:
+            print(f"The root is {lastGuess}\n")
+        else:
+            print(lastGuess)
+            print("After testing it can be seen that this root is not suitable because f(x) doesn't equal 0\n")
+
+
 
 epsilon=0.0001
 x = sp.symbols('x')
@@ -155,12 +265,13 @@ f1 = x**3 -x-1
 f2 = x**4 +x**3-3*x**2
 start_point = -3
 end_point = 2
+smallestRange=0.1
 
 
 while True:
     print("how would you like to solve this equation? ")
     print("1- Bisection method")
-    print("2- newton-repson method")
+    print("2- newton-raphson method")
     print("3- secant method")
 
     val = input("please press 1 or 2 or 3 : ")
@@ -168,125 +279,12 @@ while True:
         bisection(f2,start_point,end_point,epsilon)
         break
     elif val=='2':
-        newtonRepson(f2, start_point, end_point, epsilon)
+        newtonRaphson(f2, start_point, end_point, epsilon)
         break
     elif val=='3':
-        #secant
+        secannt(f2, start_point, end_point, epsilon)
         break
     else:
         print("Wrong number, please try again. ")
 
 
-
-def Secant_Method(f, start_point, end_point, e):
-    """
-    :param f: polinom function
-    :param start_point: start point section
-    :param end_point: end point section
-    :param e: epsilon- the precision
-    :return: dictionary contains the root and number of iteration
-    """
-    iterations = 0
-    xr_minus1 = start_point
-    xr = end_point
-    xr_plus1 = (xr_minus1*f(xr)-xr*f(xr_minus1))/(f(xr)-f(xr_minus1))
-    while xr - xr_plus1 < e and f(xr) != 0:
-        iterations += 1
-        xr_minus1 = xr
-        xr = xr_plus1
-        xr_plus1 = (xr_minus1*f(xr)-xr*f(xr_minus1))/(f(xr)-f(xr_minus1))
-
-    return {xr_plus1: iterations}
-
-
-def CalcRoots():
-    """
- 
-    The function lets to select the method by which we calculate the roots.
-    If the function has no roots, you will be notified
-    """
-    roots = {}
-    epsilon = 0.0001
-    start_point = -5  # start range
-    end_point = 6  # end range
-    div_num = (abs(start_point)+abs(end_point)) / 0.1  # will represent the number of iterations we will check the sign change - f(x1)*f(x2)<0
-    choice = 0
-    while choice != '1' and choice != '2' and choice != '3':
-        print("Which method would you like to choose in order to find the equation roots?")
-        print("1.Bisection method")
-        print("2.Newton-Raphson method")
-        print("3.Secant method")
-        choice = input()
-
-    for i in range(int(div_num)):
-        if i == 0:  # first iteration
-            x1 = start_point
-            x2 = start_point+0.1
-        else:
-            x1 = x2
-            x2 = x1 + 0.1
-
-        if f(x2) == 0:  # holds the issue when there is a sign change before and after the 0
-            roots.update({x2: 0})
-
-        if f(x1)*f(x2) < 0:  # if there is a sign change
-            if choice == '1':
-                if Check_0(f) is not None:
-                    roots.update(Check_0(f))  # 0 can be a root, and is a special check
-                roots.update(Bisection_Method(f, x1, x2, epsilon))  # roots that are crossover points(function)
-                point = Bisection_Method(fprime(f), x1, x2, epsilon)  # roots that are touching points(function-prime)
-                c, iterations = list(point.items())[0]
-                if f(c) == 0:  # if the root of the function-prime reset the equation, than its a function root
-                    roots.update(point)
-            if choice == '2':
-                if Check_0(f) is not None:
-                    roots.update(Check_0(f))  # 0 can be a root, and is a special check
-                roots.update(Newton_Raphson(f, x1, x2, epsilon))
-            if choice == '3':
-                if Check_0(f) is not None:
-                    roots.update(Check_0(f))  # 0 can be a root, and is a special check
-                roots.update(Secant_Method(f, x1, x2, epsilon))
-
-    if choice=='1' and len(roots)==0:
-        print("No roots using the bisection method")
-    if choice=='2' and len(roots)==0:
-        print("No roots using the Newton Raphson method")
-    if choice=='3' and len(roots)==0:
-        print("No roots using the Secant Method method")
-    # printing all roots , with thier number of iterations
-    for root, iterations in roots.items():
-        print("The root is:", round(root, 6), "| number of iterations:", iterations)
-
-
-def f(x):
-    """
-    :param x: value of x
-    :return: value of f(x)
-    """
-    return x ** 4 + x ** 3 - 3 * (x ** 2)
-
-
-def Check_0(f):
-    """
-    :param f: the function
-    :return: dictionary contains root 0
-    """
-    if f(0) == 0:
-        return {0: 0}
-
-
-def fprime(f):
-    """
-    :param f: function
-    :return: prime function of f
-    """
-    x = sp.symbols('x')
-    f = f(x)
-    f_prime = f.diff(x)
-    f = lambdify(x, f)
-    f_prime = lambdify(x, f_prime)
-    return f_prime
-
-
-
-CalcRoots()
