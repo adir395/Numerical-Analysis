@@ -1,1 +1,483 @@
+import sympy as sp
+import math
 
+def calc_av(A, b):
+    """
+    multiply inverse matrix and vector b
+    :param A:matrix
+    :param b: b vector
+    :return: inverse
+    """
+    inverseMat = inverse(A)
+    av = mul_matrix_wVector(inverseMat, b)
+    return av
+
+
+def identity_matrix(size):
+    """
+    calculates the identity matrix
+    :param size: size of matrix
+    :return: the identity matrix
+    """
+    I = list(range(size))
+    for i in range(size):
+        I[i] = list(range(size))
+        for j in range(size):
+            if i == j:
+                I[i][j] = 1
+            else:
+                I[i][j] = 0
+    return I
+
+
+def mul_matrix(m1, m2):
+    """
+
+    :param m1: first matrix
+    :param m2: second matrix
+    :return: the multiply of the matrices
+    """
+    len_m1 = len(m1)
+    cols_m1 = len(m1[0])
+    rows_m2 = len(m2)
+    if cols_m1 != rows_m2:  # Checks if it is valid to multiply between matrix
+        print("Cannot multiply between matrix (incorrect size)")
+        return
+    new_mat = list(range(len_m1))
+    val = 0
+    for i in range(len_m1):
+        new_mat[i] = list(range(rows_m2))
+        for j in range(len(m2[0])):
+            for k in range(cols_m1):
+                val += m1[i][k] * m2[k][j]
+            new_mat[i][j] = val
+            val = 0
+    return new_mat
+
+
+def inverse(mat):
+    """
+    calculates the inverse matrix
+
+    :param mat: matrix
+    :return: the inverse matrix
+    """
+    size = len(mat)
+    invert_mat = identity_matrix(size)
+    for col in range(size):
+        elem_mat = identity_matrix(size)
+        max_row = max_val_index(mat, col)  # Returns the index of the row with the maximum value in the column
+        invert_mat = mul_matrix(eMatForSwap(size, col, max_row), invert_mat)  # Elementary matrix for swap rows
+        mat = mul_matrix(eMatForSwap(size, col, max_row), mat)  # swap between rows in case the pivot is 0
+        pivot = mat[col][col]
+        for row in range(size):
+            if row != col and mat[row][col] != 0:
+                elem_mat[row][col] = (-1) * (mat[row][col] / pivot)
+        mat = mul_matrix(elem_mat, mat)
+        invert_mat = mul_matrix(elem_mat, invert_mat)
+    # check diagonal numbers
+    for i in range(size):
+        pivot = mat[i][i]
+        if pivot != 1:
+            for col in range(size):
+                invert_mat[i][col] /= float(pivot)
+            mat[i][i] = 1
+    return invert_mat
+
+
+def mul_matrix_wVector(m, v):
+    """
+    multiply matrix and vector
+
+    :param m: matrix
+    :param v: vector
+    :return: the multiplication of matrix and the vector
+    """
+    len_m = len(m)
+    cols_m = len(m[0])
+    rows_v = len(v)
+    if cols_m != rows_v:  # Checks if it is valid to multiply between matrix
+        print("Cannot multiply between matrix (incorrect size)")
+        return
+    new_mat = list(range(len_m))
+    val = 0
+    for i in range(len_m):
+        for k in range(len(m[0])):
+            val += m[i][k] * v[k]
+        new_mat[i] = val
+        val = 0
+    return new_mat
+
+
+def max_val_index(mat, col):
+    """
+    find the index with the max value
+    :param mat: matrix
+    :param col: column
+    :return: the index
+    """
+    max = abs(mat[col][col])
+    index = col
+    for row in range(col, len(mat)):
+        if abs(mat[row][col]) > max:
+            max = abs(mat[row][col])
+            index = row
+    return index
+
+
+def eMatForSwap(size, index1, index2):
+    """
+    swaps columns of the matrix
+    :param size: matrix size
+    :param index1: first index
+    :param index2: second index
+    :return: the new matrix
+    """
+    mat = identity_matrix(size)
+    # swap rows
+    tmp = mat[index1]
+    mat[index1] = mat[index2]
+    mat[index2] = tmp
+    return mat
+
+
+def linear_interpolation(plist, x):
+    """
+    calculates f(x) by the linear interpolation
+    :param plist: matrix
+    :param x: x value
+    :return: the y parameter matches to the given x value
+    """
+    for i in range(len(plist)):
+     if x== plist[i][0]:
+         return plist[i][1]
+    x1 = 0
+    x2 = 0
+    y1 = 0
+    y2 = 0
+    for i in range(len(plist)):
+        if plist[i][0] < x < plist[i + 1][0]:
+            x1 = plist[i][0]
+            y1 = plist[i][1]
+            x2 = plist[i + 1][0]
+            y2 = plist[i + 1][1]
+
+    fx = ((y1 - y2) / (x1 - x2)) * x + (((y2 * x1) - (y1 * x2)) / (x1 - x2))
+    return fx
+
+
+def polynomial_interpolation(plist, x):
+    """
+    calculates f(x) by the polynomial interpolation
+
+    :param plist: matrix
+    :param x: x value
+    :return: the y parameter matches to the given x value
+    """
+    n = len(plist)
+    A = [[0 for i in range(n)] for j in range(n)]
+    for i in range(n):
+        for j in range(n):
+            A[i][j] = plist[i][0] ** j
+    b = [0 for i in range(n)]
+    for i in range(n):
+        b[i] = plist[i][1]
+    a = calc_av(A, b)
+    p = 0
+
+    for i in range(n):
+        p = p + a[i] * x ** i
+    return p
+
+
+def neville_interpolation(plist, x):
+    """
+    calculates f(x) by the neville interpolation
+
+    :param plist: matrix
+    :param x: x value
+    :return: the y parameter matches to the given x value
+    """
+    for i in range(len(plist)):
+        if x == plist[i][0]:
+            return plist[i][1]
+    tot = 0
+    size = len(plist)
+    temp_table = [[point[0], point[1]] for point in plist]
+    for j in range(1, size):
+        for i in range(size - 1, j - 1, -1):
+            temp_table[i][1] = ((x - temp_table[i - j][0]) * temp_table[i][1] - (x - temp_table[i][0]) *
+                                temp_table[i - 1][1]) / (temp_table[i][0] - temp_table[i - j][0])
+    tot = temp_table[size - 1][1]
+    print("The approximation (interpolation) of the point ", x, " is: ", round(tot, 4))
+    return tot
+
+
+def lagrange_interpolation(plist, x):
+    """
+    calculates f(x) by the lagrange interpolation
+
+    :param plist: matrix
+    :param x: x value
+    :return: the y parameter matches to the given x value
+    """
+    xp = []
+    yp = []
+    result = 0
+    for i in range(len(plist)):
+        xp.append(plist[i][0])
+        yp.append(plist[i][1])
+    for i in range(len(plist)):
+        lagrange_i = 1
+        for j in range(len(plist)):
+            if i != j:
+                lagrange_i = lagrange_i * (x - xp[j]) / (xp[i] - xp[j])
+        result += lagrange_i * yp[i]
+
+    print("The approximation (interpolation) of the point ", x, " is: ", round(result, 4))
+    return result
+
+
+def findmatrixsize(plist):
+    """
+    find matrix length
+    :param plist: matrix
+    :return: matrix size
+    """
+    return len(plist)
+
+
+def findh(plist):
+    """
+    find vector h of matrix
+    :param plist: matrix
+    :return: vector h of matrix
+    """
+    h = []
+    h.append(plist[1][0] - plist[0][0])
+    for i in range(2, len(plist)):
+        h.append(plist[i][0] - plist[i - 1][0])
+
+    return h
+
+
+def findgimmel(plist):
+    """
+    finds vector of the lambdas
+    :param plist: matrix
+    :return: vector gimmel
+    """
+    # lambda has a meaning in python but it looks like gimmel
+    gimmel = []
+    h = findh(plist)
+    for i in range(1, len(h)):
+        gimmel.append(h[i] / (h[i - 1] + h[i]))
+    return gimmel
+
+
+def finddi(plist):
+    """
+    finds vector d
+    :param plist: matrix
+    :return: vector d
+    """
+    h = findh(plist)
+    di = []
+    for i in range(1, len(h)):
+        di.append((6 / ((h[i - 1]) + h[i])) * (
+                    ((plist[i + 1][1] - plist[i][1]) / h[i]) - (((plist[i][1] - plist[i - 1][1]) / h[i - 1]))))
+    return di
+
+
+def findmiu(plist):
+    """
+    finds vector miu
+    :param plist: matrix
+    :return: vector miu
+    """
+    gimmel = findgimmel(plist)
+    miu = []
+    for i in range(0, len(gimmel)):
+        miu.append(1 - gimmel[i])
+    return miu
+
+
+
+
+
+
+
+
+def findnewmatrix(plist):
+    """
+    finds the matrix with the number 2 in the diagonal
+    :param plist: matrix
+    :return: new matrix of values (the matrix with the number 2 in the diagonal)
+    """
+    gimmel=findgimmel(plist)
+    miu=findmiu(plist)
+    r1=[]
+    r2=[]
+    b=[]
+    r1.append(2)
+    r1.append(gimmel[0])
+    r2.append(miu[1])
+    r2.append(2)
+    b.append(r1)
+    b.append(r2)
+    return b
+
+
+def GaussSeidel(matrix,b,diagonal):
+    """
+    solves system of equations using the gauss-seidel method
+    :param matrix:the given matrix
+    :param b: vector b
+    :param diagonal: true or false- if there is a dominant diagonal
+    :return: true or false If the system of equations converges
+    """
+    answer=[]
+    count=0
+    counter=0
+    size = len(matrix)
+    tolerableError = 0.00001
+    tolerableErrorCounter = 0
+    variables = []
+    nextVariables = []
+    positiveNegative=[]
+    e = []
+    whileCounter = 1
+    for i in range(size):
+        variables.append(0)
+        e.append(0)
+        nextVariables.append(0)
+        positiveNegative.append(0)
+
+    while (tolerableErrorCounter == 0 )or (diagonal==False and counter<100):
+        for i in range(size):
+            nextVariables[i] = b[i][0]
+            for j in range(size):
+                if i != j:
+                    nextVariables[i] -= (matrix[i][j] * variables[j])
+            nextVariables[i] /= matrix[i][i]
+            e[i] = abs(nextVariables[i] - variables[i])
+            variables[i]=nextVariables[i]
+            if whileCounter == 1:
+                positiveNegative[i] = e[i]
+            else:
+                if (e[i] > positiveNegative[i]):
+                    answer.append(0)
+                    answer.append(0)
+                    return answer
+                else:
+                    positiveNegative[i] = e[i]
+
+
+        for i in range(size):
+            variables[i] = nextVariables[i]
+        if diagonal==True:
+            for i in range(size):
+                if e[i] < tolerableError:
+                    tolerableErrorCounter += 1
+            count+=1
+        else:
+            counter+=1
+        if counter==99:
+            print("Although there is no dominant diagonal")
+        whileCounter+=1
+    for i in range(size):
+        answer.append(nextVariables[i])
+    return answer
+
+
+
+def findm(plist):
+    """
+    finds the vector m
+    :param plist: matrix
+    :return: vector m
+    """
+    di = finddi(plist)
+    di0=[]
+    di1=[]
+    di0.append(di[0])
+    di1.append(di[1])
+    newdi = [di[0], di[1]]
+    vectorS = di0, di1
+    vectorC = [vectorS[0], vectorS[1]]
+    m= GaussSeidel(findnewmatrix(plist), vectorC, True)
+
+    m1=m[0]
+    m2=m[1]
+    m[0]=0
+    m[1]=m1
+    m.append(m2)
+    m.append(0)
+    return m
+
+
+def findbetween(plist,x):
+    """
+    finds the indexes of the x values he is between
+    :param plist: matrix
+    :param x: the value we want to know between which x values he is in
+    :return: the indexes of the x values
+    """
+    for i in range(1,len(plist)):
+        if plist[i-1][0]<x<plist[i][0]:
+            return i-1,i
+
+def sepline_interpolation(plist, x):
+    """
+    function that calls all the small calculation functions for the  sepline interpolation
+    :param plist: matrix
+    :param x: x value
+    :return: sepline interpolation of x in the matrix
+    """
+    x11,x22=findbetween(plist,x)
+    x1=plist[x11][0]
+    x2=plist[x22][0]
+    m=findm(plist)
+    h=findh(plist)
+    y2=plist[x22][1]
+    y1=plist[x11][1]
+    part1=(((math.pow(x2-x,3))*float(m[x11]))+((math.pow(x-x1,3))*float(m[x22])))/(6*float(h[x11]))
+    part2=((((x2-x)*(float(y1)))+((x-x1)*(float(y2))))/(float(h[x11])))
+    part3=((((x2-x)*float(m[x11]))+((x-x1)*float(m[x22])))/6)*(float(h[x11]))
+    sx=part1+part2-part3
+    return sx
+
+
+
+
+def main():
+    """
+    main function that calls all the interpolation functions
+    """
+
+    x = sp.symbols('x')
+    x = 2.5 # please change the value as you wish
+    x = float(x)
+    list_inter = [[0, 0], [1, 0.8415], [2, 0.9093], [3, 0.1411], [4, -0.7568], [5, -0.9589],
+                  [6, -0.2794]]  # table for linear interpolation
+    fx = linear_interpolation(list_inter, x)
+    print("The value of the point", x, "by linear interpolation method is: %.4f" % fx)
+    po_inter_t =  [[1, 0.8415], [2, 0.9093], [3, 0.1411]] # table for polynomial interpolation
+    fx = polynomial_interpolation(po_inter_t, x)
+    print("The value of the point", x, "by polynomial interpolation method is: %.4f" % fx)
+
+    la_inter_t = [[1, 1], [2, 0], [4, 1.5]]  # table for lagrange interpolation
+    fx = lagrange_interpolation(la_inter_t, x)
+    print("The value of the point", x, "by lagrange interpolation method is: %.4f" % fx)
+
+    #ne_inter_t = [[1, 0.7651], [1.3, 0.6200], [1.6, 0.4554], [1.9, 0.2818],  [2.2, 0.1103]]  # table for neville interpolation
+    ne_inter_t = [[1, 0], [1.2, 0.112463], [1.3, 0.167996], [1.4, 0.222709]]  # table for neville interpolation
+    fx = neville_interpolation(ne_inter_t, x)
+    print("The value of the point", x, "by neville interpolation method is: %.4f" % fx)
+
+    newmatrix = [[0, 0], [math.pi / 6, 0.5], [math.pi / 4, 0.7072], [math.pi / 2, 1]]
+    x = (math.pi) / 3
+    print("The value of the point pai/3 by sepline interpolation method is (you can change it in the main):" + str(sepline_interpolation(newmatrix, (x))))
+
+
+main()
