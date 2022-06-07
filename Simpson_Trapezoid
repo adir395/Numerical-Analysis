@@ -1,7 +1,27 @@
 import math
-
 import sympy as sp
 from sympy.utilities.lambdify import lambdify
+
+def trapezoidalMethod(a,b,f,n):
+    """
+    calculates the area of the given function by the trapezoidal method
+
+    :param a: first index range
+    :param b: last index range
+    :param f: the function
+    :param n: number of sections
+    :return: the area of the function
+    """
+    h = (b - a) / n
+    result=0
+    aIndex=a
+    bIndex=a+h
+    f = lambdify(x, f)
+    while (bIndex <= b):
+        result+=0.5*(bIndex-aIndex)*(f(aIndex)+f(bIndex))
+        aIndex+=h
+        bIndex+=h
+    print(f"The area of the function by the trapezoidal method is: {result}")
 
 def calch(b,a,n):
     h= ((b-a))/n
@@ -44,3 +64,14 @@ print(f)
 arrx=(xarray(0,calch(math.pi,0,4),4))
 print(str(yarray(arrx,4,f)))
 print(str(simpsonMethod(yarray(arrx,4,f),calch(math.pi,0,4))))
+
+a=0
+b=math.pi
+n=4
+trapezoidalMethod(a,b,f,n)
+
+
+
+
+
+
