@@ -23,10 +23,6 @@ def trapezoidalMethod(a,b,f,n):
         bIndex+=h
     print(f"The area of the function by the trapezoidal method is: {result}")
 
-import math
-import sympy as sp
-from sympy.utilities.lambdify import lambdify
-
 def calch(b,a,n):
     """
 
