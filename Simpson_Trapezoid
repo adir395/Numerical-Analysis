@@ -61,14 +61,35 @@ def simpsonMethod(yarr,h):
     print("1/3*"+str(h)+"*["+str(newstr))
     return num
 
-
+"""
+epsilon=0.0001
 x=sp.symbols('x')
-f=sp.sin(x)
-a=0
-b=math.pi
-n=4
-print(simpsonMethod(a,b,n,f))
-trapezoidalMethod(a,b,f,n)
+f=#enter functoin
+
+b=
+a=
+n=
+print(f)
+
+arrx=(xarray(a,calch(b,a,n),n))
+print("Simpson Method:")
+print("num of sections="+str(n))
+print("the final answer:"+str(simpsonMethod(yarray(arrx,n,f),calch(b,a,n))))
+
+"""
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
