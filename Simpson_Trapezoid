@@ -23,29 +23,59 @@ def trapezoidalMethod(a,b,f,n):
         bIndex+=h
     print(f"The area of the function by the trapezoidal method is: {result}")
 
+import math
+import sympy as sp
+from sympy.utilities.lambdify import lambdify
+
 def calch(b,a,n):
+    """
+
+    :param b: Integral number
+    :param a: Integral number
+    :param n: how many parts
+    :return: the height
+    """
     h= ((b-a))/n
     return h
 
 def xarray(a,h,n):
+    """
+
+    :param a: Integral number
+    :param h: the height
+    :param n: how many parts
+    :return: x array
+    """
     xarr=[]
     xarr.append(a)
     for i in range(a+1,n+1):
         xarr.append(xarr[i-1]+h)
-    print(xarr)
     return xarr
 
 def yarray(axarr,n,func):
+    """
+
+    :param axarr: x array
+    :param n: how mant parts
+    :param func: the function
+    :return: y array
+    """
     yarr=[]
     fd=lambdify(x,func)
     for i in range(0,n+1):
         yarr.append(fd(float(axarr[i])))
-    print("yarr"+str(yarr))
     return yarr
 
 
-def simpsonMethod(yarr,h):
+def simpsonMethod(a,b,n,func):
+    """
 
+    :param yarr: y array
+    :param h: the height
+    :return: the result of simpsonMethod
+    """
+    h=calch(b,a,n)
+    yarr=yarray(xarray(a,h,n),n,func)
     num=yarr[0]
     for i in range(1,len(yarr)):
         if(i%2==0):
@@ -60,10 +90,10 @@ def simpsonMethod(yarr,h):
 
 x=sp.symbols('x')
 f=sp.sin(x)
-print(f)
-arrx=(xarray(0,calch(math.pi,0,4),4))
-print(str(yarray(arrx,4,f)))
-print(str(simpsonMethod(yarray(arrx,4,f),calch(math.pi,0,4))))
+a=0
+b=math.pi
+n=4
+print(simpsonMethod(a,b,n,f))
 
 a=0
 b=math.pi
