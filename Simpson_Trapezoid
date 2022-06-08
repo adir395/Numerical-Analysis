@@ -23,39 +23,23 @@ def trapezoidalMethod(a,b,f,n):
         bIndex+=h
     print(f"The area of the function by the trapezoidal method is: {result}")
 
-def calch(b,a,n):
-    """
+import math
+import sympy as sp
+from sympy.utilities.lambdify import lambdify
 
-    :param b: Integral number
-    :param a: Integral number
-    :param n: how many parts
-    :return: the height
-    """
+
+def calch(b,a,n):
     h= ((b-a))/n
     return h
 
 def xarray(a,h,n):
-    """
-
-    :param a: Integral number
-    :param h: the height
-    :param n: how many parts
-    :return: x array
-    """
     xarr=[]
     xarr.append(a)
-    for i in range(a+1,n+1):
+    for i in range(1,n+1):
         xarr.append(xarr[i-1]+h)
     return xarr
 
 def yarray(axarr,n,func):
-    """
-
-    :param axarr: x array
-    :param n: how mant parts
-    :param func: the function
-    :return: y array
-    """
     yarr=[]
     fd=lambdify(x,func)
     for i in range(0,n+1):
@@ -63,25 +47,23 @@ def yarray(axarr,n,func):
     return yarr
 
 
-def simpsonMethod(a,b,n,func):
-    """
-
-    :param yarr: y array
-    :param h: the height
-    :return: the result of simpsonMethod
-    """
-    h=calch(b,a,n)
-    yarr=yarray(xarray(a,h,n),n,func)
+def simpsonMethod(yarr,h):
+    newstr=""
     num=yarr[0]
     for i in range(1,len(yarr)):
         if(i%2==0):
             num=num+2*yarr[i]
+            newstr=newstr+str(num)
+            print("f["+str(i)+"]="+str(num))
         else:
             num=num+4*yarr[i]
+            newstr = newstr + str(num)
+            print("f[" + str(i) + "]=" + str(num))
+
     num=num+yarr[len(yarr)-1]
     num=(1/3)*h*num
+    print("1/3*"+str(h)+"*["+str(newstr))
     return num
-
 
 
 x=sp.symbols('x')
