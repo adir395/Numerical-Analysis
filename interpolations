@@ -169,12 +169,13 @@ def linear_interpolation(plist, x):
 def polynomial_interpolation(plist, x):
     """
     calculates f(x) by the polynomial interpolation
-
     :param plist: matrix
     :param x: x value
     :return: the y parameter matches to the given x value
     """
     n = len(plist)
+    stringnew=""
+    arr=[]
     A = [[0 for i in range(n)] for j in range(n)]
     for i in range(n):
         for j in range(n):
@@ -182,6 +183,21 @@ def polynomial_interpolation(plist, x):
     b = [0 for i in range(n)]
     for i in range(n):
         b[i] = plist[i][1]
+    print(str(b))
+    xpow=0
+    for i in range(len(b)):
+        if(i==0):
+            xpow=xpow
+        else:
+            xpow=xpow+1
+        print(("p"+str(i)+"(x)="+str(b[i])+"x^"+str(xpow)))
+        stringnew=stringnew+(str(b[i])+"x^"+str(xpow))
+        if(i==len(b)-1):
+            print(stringnew)
+        else:
+            stringnew = stringnew + "+"
+
+        #print("p["+str(n-1)+"]="+arr[i]+"+")
     a = calc_av(A, b)
     p = 0
 
@@ -193,7 +209,6 @@ def polynomial_interpolation(plist, x):
 def neville_interpolation(plist, x):
     """
     calculates f(x) by the neville interpolation
-
     :param plist: matrix
     :param x: x value
     :return: the y parameter matches to the given x value
@@ -208,8 +223,9 @@ def neville_interpolation(plist, x):
         for i in range(size - 1, j - 1, -1):
             temp_table[i][1] = ((x - temp_table[i - j][0]) * temp_table[i][1] - (x - temp_table[i][0]) *
                                 temp_table[i - 1][1]) / (temp_table[i][0] - temp_table[i - j][0])
-    tot = temp_table[size - 1][1]
-    print("The approximation (interpolation) of the point ", x, " is: ", round(tot, 4))
+            print("["+str(i)+"]"+"["+str(j)+"]"+"="+str(temp_table[i][1]))
+
+    tot = temp_table[i][1]
     return tot
 
 
@@ -456,28 +472,28 @@ def main():
     """
 
     x = sp.symbols('x')
-    x = 2.5 # please change the value as you wish
+    x = 0.65 # please change the value as you wish
     x = float(x)
-    list_inter = [[0, 0], [1, 0.8415], [2, 0.9093], [3, 0.1411], [4, -0.7568], [5, -0.9589],
-                  [6, -0.2794]]  # table for linear interpolation
-    fx = linear_interpolation(list_inter, x)
-    print("The value of the point", x, "by linear interpolation method is: %.4f" % fx)
-    po_inter_t =  [[1, 0.8415], [2, 0.9093], [3, 0.1411]] # table for polynomial interpolation
+    #list_inter = [[0, 0], [1, 0.8415], [2, 0.9093], [3, 0.1411], [4, -0.7568], [5, -0.9589],
+                #  [6, -0.2794]]  # table for linear interpolation
+    #fx = linear_interpolation(list_inter, x)
+    #print("The value of the point", x, "by linear interpolation method is: %.4f" % fx)
+    po_inter_t =  [[0.2, 13.7241], [0.35, 13.9776], [0.45, 14.0625], [0.6, 13.9776], [0.75, 13.7241], [0.85, 13.3056], [0.9, 12.7281]] # table for polynomial interpolation
     fx = polynomial_interpolation(po_inter_t, x)
     print("The value of the point", x, "by polynomial interpolation method is: %.4f" % fx)
 
-    la_inter_t = [[1, 1], [2, 0], [4, 1.5]]  # table for lagrange interpolation
-    fx = lagrange_interpolation(la_inter_t, x)
-    print("The value of the point", x, "by lagrange interpolation method is: %.4f" % fx)
+    #la_inter_t = [[1, 1], [2, 0], [4, 1.5]]  # table for lagrange interpolation
+    #fx = lagrange_interpolation(la_inter_t, x)
+    #print("The value of the point", x, "by lagrange interpolation method is: %.4f" % fx)
 
     #ne_inter_t = [[1, 0.7651], [1.3, 0.6200], [1.6, 0.4554], [1.9, 0.2818],  [2.2, 0.1103]]  # table for neville interpolation
-    ne_inter_t = [[1, 0], [1.2, 0.112463], [1.3, 0.167996], [1.4, 0.222709]]  # table for neville interpolation
+    ne_inter_t = [[0.2, 13.7241], [0.35, 13.9776], [0.45, 14.0625], [0.6, 13.9776], [0.75, 13.7241], [0.85, 13.3056], [0.9, 12.7281]]  # table for neville interpolation
     fx = neville_interpolation(ne_inter_t, x)
     print("The value of the point", x, "by neville interpolation method is: %.4f" % fx)
 
-    newmatrix = [[0, 0], [math.pi / 6, 0.5], [math.pi / 4, 0.7072], [math.pi / 2, 1]]
-    x = (math.pi) / 3
-    print("The value of the point pai/3 by sepline interpolation method is (you can change it in the main):" + str(sepline_interpolation(newmatrix, (x))))
+   # newmatrix = [[0, 0], [math.pi / 6, 0.5], [math.pi / 4, 0.7072], [math.pi / 2, 1]]
+    #x = (math.pi) / 3
+    #print("The value of the point pai/3 by sepline interpolation method is (you can change it in the main):" + str(sepline_interpolation(newmatrix, (x))))
 
 
 main()
