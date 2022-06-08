@@ -94,10 +94,6 @@ a=0
 b=math.pi
 n=4
 print(simpsonMethod(a,b,n,f))
-
-a=0
-b=math.pi
-n=4
 trapezoidalMethod(a,b,f,n)
 
 
