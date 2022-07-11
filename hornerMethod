@@ -109,16 +109,13 @@ def Horners_Method(p,n,guess):
         return result
 
 
-def main():
-    x = sp.symbols('x')
-    f=x**6+4*x**5-72*x**4-214*x**3+1127*x**2+1602*x-5040
-    rank=6
-    print("Please enter an initial guess: ")
-    x0=float(input())
-    f_calc = lambdify(x, f)
-    if f_calc(x0)==0: # if x0 is a root
-        x0 += 0.000000001
-    Horners_Method(f, rank, x0)
+x = sp.symbols('x')
+f=x**6+4*x**5-72*x**4-214*x**3+1127*x**2+1602*x-5040
+rank=6
+print("Please enter an initial guess: ")
+x0=float(input())
+f_calc = lambdify(x, f)
+if f_calc(x0)==0: # if x0 is a root
+    x0 += 0.000000001
+Horners_Method(f, rank, x0)
 
-
-main()
